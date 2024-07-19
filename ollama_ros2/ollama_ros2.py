@@ -28,12 +28,21 @@ class gptClient(Node):
 
         self.stream=False
 
+        self.lastdata = ""
+
         self.gpt_client = ollama.Client(host='http://192.168.10.60:11434')
         self.get_logger().info(f'GPT Client Online')
 
     def prompt_callback(self, msg):
-        if msg.data != "":
-          prompt = msg.data
+
+        prompt = msg.data
+
+        if prompt == self.lastdata or not prompt or prompt == "":
+            self.get_logger().error('Invalid Prompt')
+            return(0)
+        else:
+          self.get_logger().info(f'Prompt Recieved:' + prompt)
+
           response = self.gpt_client.chat(model=self.model, messages=[
             {
               'role': 'system',
@@ -44,6 +53,8 @@ class gptClient(Node):
               'content': prompt,
             },
           ], stream = self.stream)
+
+          self.lastdata = prompt
 
         if response and self.stream == False:
             response_msg = String()

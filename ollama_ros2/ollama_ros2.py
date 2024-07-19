@@ -28,7 +28,7 @@ class gptClient(Node):
 
         self.stream=False
 
-        self.gpt_client = ollama.Client(host='http://localhost:11434')
+        self.gpt_client = ollama.Client(host='http://192.168.10.60:11434')
         self.get_logger().info(f'GPT Client Online')
 
     def prompt_callback(self, msg):
